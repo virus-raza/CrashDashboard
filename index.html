@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crash Detection Dashboard</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  />
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet/dist/leaflet.js"
+  ></script>
+
+  <style>
+    #map { height: 60vh; border-radius: 1rem; }
+  </style>
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+  <div class="max-w-3xl mx-auto py-8 px-4">
+    <h1 class="text-3xl font-bold mb-6 text-center">🚨 Crash Detection Dashboard</h1>
+
+    <div class="bg-white p-6 rounded-xl shadow-md mb-6">
+      <h2 class="text-xl font-semibold mb-2">Last Crash Details:</h2>
+      <p id="crash-time" class="mb-1">Time: loading...</p>
+      <p id="crash-location">Location: loading...</p>
+    </div>
+
+    <div id="map"></div>
+  </div>
+
+  <script>
+    const API_URL = "https://sqzhrlzo6f.execute-api.eu-north-1.amazonaws.com/"; // Replace with your real GET API
+
+    async function loadCrashData() {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+
+        const lat = parseFloat(data.latitude);
+        const lon = parseFloat(data.longitude);
+        const time = new Date(data.timestamp).toLocaleString();
+
+        document.getElementById("crash-time").textContent = `Time: ${time}`;
+        document.getElementById("crash-location").textContent = `Location: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+
+        // Load map
+        const map = L.map('map').setView([lat, lon], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors',
+        }).addTo(map);
+
+        L.marker([lat, lon]).addTo(map)
+          .bindPopup("Crash Location")
+          .openPopup();
+      } catch (e) {
+        document.getElementById("crash-time").textContent = "Error loading data";
+        document.getElementById("crash-location").textContent = "";
+      }
+    }
+
+    loadCrashData();
+  </script>
+</body>
+</html>
