@@ -1,0 +1,922 @@
+Use the following master prompt for Codex. It is written to generate a production-grade React + Python solution that satisfies the problem statement as well as all of your additional requirements.
+
+
+---
+
+PROMPT FOR CODEX
+
+You are a Principal Solution Architect, Senior Python Developer, Senior React Developer, Azure OpenAI Expert, GenAI Architect, and DevSecOps Engineer.
+
+Create a complete enterprise-grade solution for the following problem statement.
+
+Project Name
+
+Legacy Application Code Comment Generator for IT Modernization Teams
+
+
+---
+
+BUSINESS PROBLEM
+
+IT modernization teams often work with poorly documented legacy codebases such as:
+
+COBOL
+
+PL/SQL
+
+Java
+
+C
+
+C++
+
+Mainframe programs
+
+Shell scripts
+
+
+The solution should allow users to upload legacy source code and receive:
+
+1. AI-generated inline comments
+
+
+2. Function summaries
+
+
+3. Business logic explanations
+
+
+4. Modernization recommendations
+
+
+5. Refactoring suggestions
+
+
+6. Architecture understanding
+
+
+
+The solution should significantly reduce time spent understanding legacy applications.
+
+
+---
+
+TECHNOLOGY STACK
+
+Frontend
+
+React 18 TypeScript Material UI Redux Toolkit React Router Axios
+
+Backend
+
+Python 3.11 FastAPI
+
+AI
+
+Azure OpenAI
+
+Models:
+
+GPT-4o
+
+GPT-4.1
+
+Text Embedding 3 Large
+
+
+Use Azure OpenAI SDK.
+
+SSL Verification MUST be configurable and defaulted to False.
+
+Example:
+
+httpx.AsyncClient(
+    verify=False
+)
+
+and
+
+requests.Session().verify = False
+
+
+---
+
+HIGH LEVEL ARCHITECTURE
+
+Create following modules.
+
+1. Authentication Module
+
+Login Page
+
+Support:
+
+Email Login
+
+Password Login
+
+
+Roles:
+
+Admin
+
+User
+
+
+Features:
+
+JWT Authentication
+
+Session Management
+
+User Profile
+
+Last Login Time
+
+
+Display logged-in username in UI header.
+
+
+---
+
+2. User Dashboard
+
+Show:
+
+User Name
+
+Last Login
+
+Uploaded Documents Count
+
+Conversations Count
+
+
+
+---
+
+3. Multimodal Ingestion Module
+
+Accept:
+
+Files
+
+PDF
+
+DOCX
+
+TXT
+
+CSV
+
+JSON
+
+XML
+
+Images
+
+
+Images
+
+PNG
+
+JPG
+
+JPEG
+
+
+Code Files
+
+COBOL
+
+JAVA
+
+SQL
+
+PLSQL
+
+C
+
+CPP
+
+PY
+
+JS
+
+
+
+---
+
+PDF PREPROCESSING PIPELINE
+
+Before chunking:
+
+Perform:
+
+1. OCR extraction
+
+
+2. Header removal
+
+
+3. Footer removal
+
+
+4. Duplicate line removal
+
+
+5. Noise cleaning
+
+
+6. Metadata extraction
+
+
+7. Table extraction
+
+
+8. Language detection
+
+
+9. Sensitive data masking
+
+
+
+Use:
+
+PyMuPDF
+
+pdfplumber
+
+OCR
+
+Tesseract
+
+
+Store clean text.
+
+
+---
+
+IMAGE UNDERSTANDING
+
+Use Azure GPT-4o Vision.
+
+Extract:
+
+Text
+
+Diagrams
+
+Screenshots
+
+Flowcharts
+
+
+Generate structured JSON.
+
+
+---
+
+DOCUMENT CHUNKING
+
+Implement advanced chunking.
+
+Each chunk must contain metadata.
+
+Example:
+
+{
+  "chunk_id":"123",
+  "document_name":"abc.pdf",
+  "source_type":"pdf",
+  "page_number":5,
+  "language":"english",
+  "labels":["business_logic","database"],
+  "content":"..."
+}
+
+
+---
+
+CHUNK LABELING
+
+Auto-generate labels:
+
+Examples:
+
+Database
+
+API
+
+Authentication
+
+Business Logic
+
+Mainframe
+
+Legacy Code
+
+SQL
+
+Batch Processing
+
+UI
+
+Security
+
+
+Store labels with chunk metadata.
+
+
+---
+
+VECTOR DATABASE
+
+Use:
+
+ChromaDB
+
+Store:
+
+Chunk
+
+Metadata
+
+Labels
+
+Embeddings
+
+
+Generate embeddings using:
+
+Azure Text Embedding 3 Large
+
+
+---
+
+COSINE SIMILARITY
+
+Implement retrieval using:
+
+Cosine Similarity
+
+Return:
+
+Top K Relevant Chunks
+
+Configurable K.
+
+
+---
+
+ADVANCED RAG PIPELINE
+
+Implement enterprise RAG.
+
+Flow:
+
+User Query → Query Rewriter → Retriever → Re-ranking → Context Builder → Azure OpenAI → Response
+
+
+---
+
+QUERY REWRITING
+
+Before retrieval:
+
+Use Azure OpenAI.
+
+Convert:
+
+User query
+
+Into
+
+Optimized retrieval query.
+
+Examples:
+
+Original:
+
+"Explain customer validation"
+
+Rewritten:
+
+"Find business logic related to customer validation, account verification and rule processing."
+
+
+---
+
+RE-RANKING
+
+Implement reranker.
+
+Options:
+
+Cross Encoder
+
+Use:
+
+sentence-transformers
+
+Example:
+
+cross-encoder/ms-marco-MiniLM-L-6-v2
+
+Re-rank retrieved chunks before LLM call.
+
+
+---
+
+RAGAS EVALUATION
+
+Integrate RAGAS.
+
+Evaluate:
+
+Context Precision
+
+Context Recall
+
+Faithfulness
+
+Answer Relevancy
+
+
+Store metrics.
+
+Create endpoint:
+
+GET /ragas/report
+
+Return evaluation dashboard data.
+
+
+---
+
+MEMORY MANAGEMENT
+
+Store last 10 conversations per user.
+
+Memory should include:
+
+User Question
+
+AI Response
+
+
+Used as conversation context.
+
+Implement:
+
+ConversationMemoryService
+
+Automatically inject previous 10 chats into prompt.
+
+
+---
+
+CHAT MODULE
+
+Create ChatGPT-like interface.
+
+Features:
+
+Typing animation
+
+Markdown rendering
+
+Code formatting
+
+Streaming responses
+
+Copy response
+
+Regenerate response
+
+
+
+---
+
+LIVE Q&A MODE
+
+Provide toggle:
+
+Normal Chat
+
+Live Q&A
+
+When enabled:
+
+Perform:
+
+1. Web Search
+
+
+2. RAG Search
+
+
+3. Azure OpenAI Answer
+
+
+
+Combine results.
+
+
+---
+
+WEB SEARCH
+
+Create search provider abstraction.
+
+Default:
+
+DuckDuckGo Search
+
+Optional:
+
+Bing Search API
+
+Flow:
+
+User Query → Web Search → Top Results → Summarization → Answer
+
+Citations required.
+
+
+---
+
+LIVE AGENT SUPPORT
+
+Add WhatsApp integration.
+
+UI Button:
+
+"Chat with Live Agent"
+
+Configuration:
+
+WHATSAPP_NUMBER=
+
+Open:
+
+https://wa.me/<number>
+
+
+---
+
+APPLY POLICY LINK
+
+Add configurable button:
+
+Apply Policy
+
+Admin can configure URL.
+
+Visible in header.
+
+Example:
+
+POLICY_URL=
+
+
+---
+
+LEGACY CODE COMMENT GENERATOR
+
+Primary feature.
+
+User uploads code.
+
+System should:
+
+1. Detect language
+
+
+2. Parse code
+
+
+3. Identify functions
+
+
+4. Identify business logic
+
+
+5. Generate comments
+
+
+
+Output:
+
+// Validates customer eligibility
+
+public boolean validateCustomer(...)
+{
+...
+}
+
+Also generate:
+
+Executive Summary
+
+Technical Summary
+
+Refactoring Suggestions
+
+Modernization Roadmap
+
+
+
+---
+
+CODE ANALYSIS FEATURES
+
+Generate:
+
+Function Summary
+
+Class Summary
+
+Dependency Summary
+
+Database Interaction Summary
+
+Business Rules
+
+Technical Debt Report
+
+Modernization Readiness Score
+
+Scale:
+
+0-100
+
+
+---
+
+GUARDRAILS
+
+Implement AI guardrails.
+
+Use:
+
+Prompt Injection Detection
+
+Toxicity Detection
+
+PII Detection
+
+Sensitive Data Detection
+
+Output Validation
+
+Hallucination Detection
+
+
+Libraries:
+
+Presidio
+
+GuardrailsAI
+
+
+Create:
+
+GuardrailService
+
+
+---
+
+SECURITY
+
+Implement:
+
+JWT
+
+RBAC
+
+Input Validation
+
+Rate Limiting
+
+Audit Logs
+
+API Logging
+
+
+
+---
+
+DATABASE
+
+PostgreSQL
+
+Tables:
+
+Users Conversations Documents Chunks Evaluations AuditLogs
+
+Use SQLAlchemy.
+
+
+---
+
+API ENDPOINTS
+
+Generate complete APIs.
+
+Examples:
+
+POST /auth/login
+
+POST /upload
+
+POST /chat
+
+POST /live-chat
+
+POST /comment-generator
+
+GET /conversations
+
+GET /documents
+
+GET /ragas/report
+
+
+---
+
+FRONTEND PAGES
+
+Create:
+
+Login
+
+Dashboard
+
+Upload
+
+Chat
+
+Live Q&A
+
+Legacy Code Analyzer
+
+Document Explorer
+
+Evaluation Dashboard
+
+Settings
+
+
+---
+
+ADMIN PANEL
+
+Admin can:
+
+View users
+
+Delete users
+
+Configure policy URL
+
+View RAG metrics
+
+View uploaded files
+
+View audit logs
+
+
+
+---
+
+DEPLOYMENT
+
+Generate:
+
+Dockerfiles
+
+docker-compose.yml
+
+Nginx
+
+Environment Variables
+
+README.md
+
+Architecture Diagram
+
+Installation Guide
+
+Deployment Guide
+
+
+---
+
+PROJECT STRUCTURE
+
+Generate complete codebase.
+
+Include:
+
+Frontend
+
+Backend
+
+Configs
+
+Docker
+
+Tests
+
+Sample Data
+
+Seed Scripts
+
+Database Migrations
+
+
+---
+
+DELIVERABLES
+
+Generate:
+
+1. Complete React Frontend
+
+
+2. Complete FastAPI Backend
+
+
+3. Azure OpenAI Integration
+
+
+4. RAG Pipeline
+
+
+5. ChromaDB Integration
+
+
+6. RAGAS Evaluation
+
+
+7. Query Rewriter
+
+
+8. Re-ranker
+
+
+9. Memory Module
+
+
+10. Authentication Module
+
+
+11. WhatsApp Integration
+
+
+12. Web Search Integration
+
+
+13. PDF Processing Pipeline
+
+
+14. Multimodal Support
+
+
+15. Guardrails
+
+
+16. Docker Deployment
+
+
+17. Swagger Documentation
+
+
+18. Unit Tests
+
+
+19. Integration Tests
+
+
+20. Production Ready Folder Structure
+
+
+
+IMPORTANT:
+
+Generate the project in multiple phases.
+
+Phase 1: Folder structure and architecture.
+
+Phase 2: Backend implementation.
+
+Phase 3: Frontend implementation.
+
+Phase 4: RAG pipeline.
+
+Phase 5: Guardrails.
+
+Phase 6: Deployment.
+
+For every file generated, provide complete code with no placeholders or TODOs. Use production-ready coding standards, type hints, logging, exception handling, environment-based configuration, and modular architecture.
